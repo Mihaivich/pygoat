@@ -1,0 +1,38 @@
+name: DevSecOps SAST Pipeline
+
+on: [push, pull_request]  # 当代码提交时自动触发
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # 3. 安装 Bandit (SAST 工具)
+      - name: Install Bandit
+        run: pip install bandit
+
+      # 4. 运行 Bandit 扫描
+      # -r: 递归扫描
+      # -f json -o bandit-report.json: 输出 JSON 格式报告（可选）
+      # --exit-zero: 即使发现漏洞也不中断流水线（为了演示方便，生产环境通常不加这个）
+      - name: Run Bandit Scan
+        run: bandit -r . -f txt -o bandit_report.txt --exit-zero
+
+      # 5. 在控制台打印结果（为了截图方便）
+        run: cat bandit_report.txt
+
+      # 6. (可选) 上传扫描报告供下载
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: bandit-security-report
+          path: bandit_report.txt
