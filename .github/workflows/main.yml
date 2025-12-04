@@ -1,6 +1,6 @@
 name: DevSecOps SAST Pipeline
 
-on: [push, pull_request]  # 当代码提交时自动触发
+on: [push, pull_request]
 
 jobs:
   security-scan:
@@ -16,21 +16,19 @@ jobs:
         with:
           python-version: '3.9'
 
-      # 3. 安装 Bandit (SAST 工具)
+      # 3. 安装 Bandit
       - name: Install Bandit
         run: pip install bandit
 
-      # 4. 运行 Bandit 扫描
-      # -r: 递归扫描
-      # -f json -o bandit-report.json: 输出 JSON 格式报告（可选）
-      # --exit-zero: 即使发现漏洞也不中断流水线（为了演示方便，生产环境通常不加这个）
+      # 4. 运行 Bandit 扫描并输出文件
       - name: Run Bandit Scan
-        run: bandit -r . -f txt -o bandit_report.txt --exit-zero
+        # 这里是关键修改：我将生成报告和打印报告分成了两个命令，或者你可以像这样写在多行里
+        run: |
+          bandit -r . -f txt -o bandit_report.txt --exit-zero
+          echo "Scan finished. Displaying report below:"
+          cat bandit_report.txt
 
-      # 5. 在控制台打印结果（为了截图方便）
-        run: cat bandit_report.txt
-
-      # 6. (可选) 上传扫描报告供下载
+      # 5. (可选) 上传报告
       - name: Upload Report
         uses: actions/upload-artifact@v3
         with:
