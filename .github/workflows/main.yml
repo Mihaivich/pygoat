@@ -6,13 +6,13 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     steps:
-      # 1. 拉取代码
+      # 1. 拉取代码 (升级到 v4)
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. 设置 Python 环境
+      # 2. 设置 Python 环境 (升级到 v5)
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -22,15 +22,14 @@ jobs:
 
       # 4. 运行 Bandit 扫描并输出文件
       - name: Run Bandit Scan
-        # 这里是关键修改：我将生成报告和打印报告分成了两个命令，或者你可以像这样写在多行里
         run: |
           bandit -r . -f txt -o bandit_report.txt --exit-zero
           echo "Scan finished. Displaying report below:"
           cat bandit_report.txt
 
-      # 5. (可选) 上传报告
+      # 5. 上传报告 (关键修复：升级到 v4)
       - name: Upload Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bandit-security-report
           path: bandit_report.txt
