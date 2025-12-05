@@ -6,28 +6,28 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     steps:
-      # 1. 拉取代码 (升级到 v4)
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. 设置 Python 环境 (升级到 v5)
+      # 2. Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
-      # 3. 安装 Bandit
+      # 3. Install Bandit
       - name: Install Bandit
         run: pip install bandit
 
-      # 4. 运行 Bandit 扫描并输出文件
+      # 4. Run Bandit scan and output file
       - name: Run Bandit Scan
         run: |
           bandit -r . -f txt -o bandit_report.txt --exit-zero
           echo "Scan finished. Displaying report below:"
           cat bandit_report.txt
 
-      # 5. 上传报告 (关键修复：升级到 v4)
+      # 5. Upload report
       - name: Upload Report
         uses: actions/upload-artifact@v4
         with:
